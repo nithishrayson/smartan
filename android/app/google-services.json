@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "457040754469",
+    "project_id": "smartanapp-15bd5",
+    "storage_bucket": "smartanapp-15bd5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:457040754469:android:ec400425ffec5c06750ccc",
+        "android_client_info": {
+          "package_name": "com.example.smartan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa_RxyqzBoFabedpCBLr1xkAZ2vv3qqXs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
