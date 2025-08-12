@@ -3,7 +3,7 @@ import 'dart:convert';
 
 class KeypointService {
   static Future<List<Map<String, dynamic>>?> getKeypoints(String imagePath) async {
-    final uri = Uri.parse('http:10.0.2.23000/extract');
+    final uri = Uri.parse('https://smartanserver-production.up.railway.app/extract');
     final request = http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('image', imagePath));
 

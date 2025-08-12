@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('✅ Image uploaded successfully!'),
+        content: const Text('Image uploaded successfully!'),
         backgroundColor: Colors.green,
         duration: const Duration(seconds: 2),
       ),

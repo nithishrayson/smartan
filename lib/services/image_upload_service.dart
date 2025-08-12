@@ -4,10 +4,10 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 class ImageUploadService {
-  final String baseUrl = 'http://10.0.2.2:3000'; 
+  final String baseUrl = 'https://smartanserver-production.up.railway.app'; 
 
   Future<String?> uploadImage(File imageFile) async {
-  final uri = Uri.parse('http://10.0.2.2:3000/upload');
+  final uri = Uri.parse('https://smartanserver-production.up.railway.app/upload');
   final request = http.MultipartRequest('POST', uri);
 
   request.files.add(await http.MultipartFile.fromPath(

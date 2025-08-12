@@ -28,7 +28,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     });
 
     try {
-      print('🔄 Loading images...');
+      print('Loading images...');
       final data = await FirestoreService.instance.fetchImageMetadata();
       print('✅ Fetched ${data.length} images');
       setState(() {
@@ -36,7 +36,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         loading = false;
       });
     } catch (e) {
-      print('❌ Error loading images: $e');
+      print('Error loading images: $e');
       setState(() {
         error = 'Failed to load images. Please try again.';
         loading = false;
@@ -76,7 +76,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         padding: const EdgeInsets.all(8),
         itemCount: images.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // Adjust for responsiveness if needed
+          crossAxisCount: 2, 
           crossAxisSpacing: 8,
           mainAxisSpacing: 8,
           childAspectRatio: 0.8,
@@ -96,7 +96,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          '🕒 ${img.timestamp}\n🆔 ${img.id}',
+                          ' ${img.timestamp}\n ${img.id}',
                           style: const TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         ),
