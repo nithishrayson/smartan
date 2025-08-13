@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:smartan/models/ImageMetadata.dart';
+import 'package:smartan/screens/image_detail_screen.dart';
 import 'package:smartan/services/LocalDatabaseServices.dart';
 import 'package:smartan/services/firebase_service.dart';
+import 'package:smartan/services/image_upload_service.dart';
+import 'package:smartan/services/image_picker_service.dart';
+import 'package:smartan/services/firebase_upload_service.dart';
 import 'package:uuid/uuid.dart';
-import '../services/image_picker_service.dart';
-import '../services/firebase_upload_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,6 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
       _uploadedImageUrl = null;
     });
 
+    // 🔍 Extract pose keypoints before upload
+    final poseData = await ImageUploadService().extractKeypoints(image);
+
+    // ✅ Upload image to Firebase
     final uploadedUrl = await firebaseUploadService.uploadImage(image);
     final imageId = const Uuid().v4();
 
@@ -56,12 +62,27 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Image uploaded successfully!'),
+      const SnackBar(
+        content: Text('Image uploaded successfully!'),
         backgroundColor: Colors.green,
-        duration: const Duration(seconds: 2),
+        duration: Duration(seconds: 2),
       ),
     );
+
+    // 🖼️ Navigate to ImageDetailScreen with pose overlay
+    if (poseData != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ImageDetailScreen(
+            imagePath: image.path,
+            timestamp: metadata.timestamp,
+            isSynced: true,
+            keypoints: poseData,
+          ),
+        ),
+      );
+    }
   }
 
   Future<void> _showImageSourceOptions() async {
@@ -74,7 +95,8 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 12),
-          const Text('Choose Image Source', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          const Text('Choose Image Source',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.camera_alt),
@@ -106,7 +128,8 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(title,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
@@ -158,7 +181,8 @@ class _HomeScreenState extends State<HomeScreen> {
             if (_selectedImage != null)
               _buildImageCard(
                 title: 'Selected Image',
-                imageWidget: Image.file(_selectedImage!, height: 200, fit: BoxFit.cover),
+                imageWidget:
+                    Image.file(_selectedImage!, height: 200, fit: BoxFit.cover),
               ),
 
             if (_uploadedImageUrl != null)
@@ -167,7 +191,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 24),
                   _buildImageCard(
                     title: 'Uploaded Image Preview',
-                    imageWidget: Image.network(_uploadedImageUrl!, height: 200, fit: BoxFit.cover),
+                    imageWidget: Image.network(_uploadedImageUrl!,
+                        height: 200, fit: BoxFit.cover),
                   ),
                 ],
               ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:smartan/screens/history_screen.dart';
 import 'package:smartan/screens/home_screen.dart';
+import 'package:smartan/screens/image_detail_screen.dart';
+import 'package:smartan/screens/pose_analyser.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -15,6 +17,9 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     const HistoryScreen(),
     const HomeScreen(),
+    const   PoseGalleryScreen(),
+
+   
   ];
 
   void _onItemTapped(int index) {
@@ -36,6 +41,10 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.photo_library),
             label: 'Gallery',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.lock_clock),
+            label: 'Pose',
           ),
         ],
       ),

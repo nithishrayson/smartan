@@ -12,4 +12,15 @@ class FirebaseUploadService {
     await ref.putFile(imageFile);
     return await ref.getDownloadURL();
   }
+  Future<String?> uploadMappedImage(File imageFile, String imageId) async {
+    try {
+      final ref = _storage.ref().child('mapped_images/$imageId.jpg');
+      final task = await ref.putFile(imageFile);
+      return await task.ref.getDownloadURL();
+    } catch (e) {
+      print('❌ Firebase upload failed: $e');
+      return null;
+    }
+  }
+
 }

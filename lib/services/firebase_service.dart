@@ -1,42 +1,48 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartan/models/ImageMetadata.dart';
-import 'package:smartan/models/pose_data.dart';
 
 class FirestoreService {
-  final _collection = FirebaseFirestore.instance.collection('images');
+  static final instance = FirestoreService._();
+  final _db = FirebaseFirestore.instance;
+
   FirestoreService._();
-  static final FirestoreService instance = FirestoreService._();
 
-  Future<void> uploadMetadata(ImageMetadata image) async {
-    await _collection.doc(image.id).set(image.toMap());
+  /// Uploads image metadata to Firestore
+  Future<void> uploadMetadata(ImageMetadata metadata) async {
+    await _db.collection('images').doc(metadata.id).set({
+      'filename': metadata.localPath.split('/').last,
+      'url': metadata.remoteUrl,
+      'timestamp': metadata.timestamp.toIso8601String(),
+    });
   }
 
-  Future<List<PoseEntry>> fetchCloudEntries() async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('pose_entries')
-        .orderBy('timestamp', descending: true)
-        .get();
+  
 
-    return snapshot.docs.map((doc) => PoseEntry.fromFirestore(doc)).toList();
-  }
-
+  /// Fetches uploaded image metadata
   Future<List<ImageMetadata>> fetchImageMetadata() async {
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('images')
-          .orderBy('timestamp', descending: true)
-          .get();
+    final snapshot = await _db.collection('images').orderBy('timestamp', descending: true).get();
 
-      print('Firestore returned ${snapshot.docs.length} docs');
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return ImageMetadata(
+        id: doc.id,
+        localPath: data['filename'] ?? '',
+        remoteUrl: data['url'] ?? '',
+        timestamp: DateTime.parse(data['timestamp']),
+      );
+    }).toList();
+  }
 
-      return snapshot.docs.map((doc) {
-        final data = doc.data();
-        print('Image doc: $data');
-        return ImageMetadata.fromMap(data);
-      }).toList();
-    } catch (e) {
-      print('Error fetching image metadata: $e');
-      return [];
-    }
+  /// Saves pose data (mapped image + keypoints)
+  Future<void> savePoseData({
+    required String imageId,
+    required String mappedUrl,
+    required List<Map<String, dynamic>> keypoints,
+  }) async {
+    await _db.collection('pose_data').doc(imageId).set({
+      'mappedUrl': mappedUrl,
+      'keypoints': keypoints,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
   }
 }
